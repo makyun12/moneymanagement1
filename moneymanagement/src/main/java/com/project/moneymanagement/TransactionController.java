@@ -18,11 +18,7 @@ public class TransactionController {
     @Autowired
     private TransactionRepository repository;
 
-    @GetMapping("/")
-    public String index() {
-        return "index";
-    }
-
+ 
     @PostMapping("/save")
     public String saveTransaction(@ModelAttribute Transaction transaction, 
                                   @RequestParam("file") MultipartFile file) throws IOException {
@@ -42,5 +38,21 @@ public class TransactionController {
 
         repository.save(transaction);
         return "redirect:/?success";
+    }
+    //For Add Login page
+    @GetMapping("/")
+    public String index() {
+        return "menu";
+    }
+
+    // URL khusus untuk halaman input transaksi
+    @GetMapping("/transaction")
+    public String transactionPage() {
+        return "index"; // index.html adalah file yang berisi form pendaftaran
+    }
+
+    @GetMapping("/login")
+    public String showLoginPage() {
+        return "login";
     }
 }
