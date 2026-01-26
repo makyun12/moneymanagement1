@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Transaksi</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="card shadow mb-4">
+            <div class="card-header text-white" style="background-color: #ffc107; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;">
+                <h4 style="margin: 0; color: #000;">🔍 Cari Kode Transaksi</h4>
+                <a th:href="@{/}" style="color: #000; text-decoration: none; font-size: 0.8rem; border: 1px solid #000; padding: 5px 10px; border-radius: 4px;">← Kembali ke Menu</a>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/edit-search}" method="get">
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" name="id" class="form-control" placeholder="Masukkan TracId (contoh: U1)" required>
+                        <button type="submit" class="btn btn-primary">Cari Data</button>
+                    </div>
+                </form>
+                <div th:if="${error}" class="alert-success" style="background-color: #f8d7da; color: #842029; margin-top: 15px; padding: 10px; border-radius: 5px;">
+                    Data tidak ditemukan!
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow" th:if="${transaction != null}">
+            <div class="card-header bg-primary text-white">
+                <h4>Edit Detail Transaksi</h4>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/save}" method="post" enctype="multipart/form-data">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">TracId (Tidak dapat diubah)</label>
+                            <input type="text" th:value="${transaction.tracId}" class="form-control" readonly style="background-color: #e9ecef;">
+                            <input type="hidden" name="tracId" th:value="${transaction.tracId}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">取引名前 (Nama)</label>
+                            <input type="text" name="tracName" th:value="${transaction.tracName}" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">金額 (ValueB)</label>
+                            <input type="number" name="tracValueB" th:value="${transaction.tracValueB}" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">割合 (Ratio %)</label>
+                            <input type="number" name="tracRatio" th:value="${transaction.tracRatio}" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">取引日</label>
+                            <input type="date" name="tracDate" th:value="${transaction.tracDate}" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">収入・出費</label>
+                        <select name="tracType" class="form-select">
+                            <option value="I" th:selected="${transaction.tracType == 'I'}">収入 (Pemasukan)</option>
+                            <option value="E" th:selected="${transaction.tracType == 'E'}">出費 (Pengeluaran)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Simpan Perubahan (Update)</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

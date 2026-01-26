@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,6 @@ public class TransactionController {
     @Autowired
     private TransactionRepository repository;
 
- 
     @PostMapping("/save")
     public String saveTransaction(@ModelAttribute Transaction transaction, 
                                   @RequestParam("file") MultipartFile file) throws IOException {
@@ -37,22 +37,38 @@ public class TransactionController {
         }
 
         repository.save(transaction);
-        return "redirect:/?success";
+        // Mengarahkan ke parameter ?updated agar muncul notifikasi kuning di halaman menu/index
+        return "redirect:/?updated";
     }
-    //For Add Login page
+
     @GetMapping("/")
     public String index() {
         return "menu";
     }
 
-    // URL khusus untuk halaman input transaksi
     @GetMapping("/transaction")
     public String transactionPage() {
-        return "index"; // index.html adalah file yang berisi form pendaftaran
+        return "index"; // index.html berisi form pendaftaran transaksi
     }
 
     @GetMapping("/login")
     public String showLoginPage() {
         return "login";
+    }
+
+    // Fitur Baru: Pencarian data berdasarkan ID untuk proses edit (取引修正)
+    @GetMapping("/edit-search")
+    public String searchForEdit(@RequestParam(value = "id", required = false) String id, Model model) {
+        if (id != null) {
+            // Mencari data di database berdasarkan TracId
+            Transaction transaction = repository.findById(id).orElse(null);
+            if (transaction != null) {
+                model.addAttribute("transaction", transaction);
+            } else {
+                // Menampilkan pesan error jika ID tidak ditemukan
+                model.addAttribute("error", true);
+            }
+        }
+        return "edit-transaction"; // Mengarah ke file edit-transaction.html
     }
 }

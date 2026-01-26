@@ -26,21 +26,27 @@
             color: white;
             transform: translateY(-5px);
         }
+        /* Style khusus untuk hover menu Update (Kuning) */
+        .menu-update:hover {
+            background-color: #ffc107 !important;
+            color: black !important;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="card shadow">
-<div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: #198754; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;">
-    <h4 style="margin: 0;">Main Menu</h4>
-    <form th:action="@{/logout}" method="post" style="display: inline;">
-        <button type="submit" style="background: none; border: 1px solid white; color: white; cursor: pointer; font-size: 0.8rem; padding: 5px 12px; border-radius: 4px; transition: 0.3s;" 
-                onmouseover="this.style.backgroundColor='rgba(255,255,255,0.2)'" 
-                onmouseout="this.style.backgroundColor='transparent'">
-            Logout
-        </button>
-    </form>
-</div>
+            <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: #198754; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;">
+                <h4 style="margin: 0;">Main Menu</h4>
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" style="background: none; border: 1px solid white; color: white; cursor: pointer; font-size: 0.8rem; padding: 5px 12px; border-radius: 4px; transition: 0.3s;" 
+                            onmouseover="this.style.backgroundColor='rgba(255,255,255,0.2)'" 
+                            onmouseout="this.style.backgroundColor='transparent'">
+                        Logout
+                    </button>
+                </form>
+            </div>
+
             <div class="card-body">
                 <p>Selamat datang! Silakan pilih menu di bawah ini:</p>
                 
@@ -48,6 +54,11 @@
                     <a th:href="@{/transaction}" class="menu-card">
                         <div style="font-size: 2rem; margin-bottom: 10px;">📝</div>
                         取引登録<br>(Pendaftaran Transaksi)
+                    </a>
+
+                    <a th:href="@{/edit-search}" class="menu-card menu-update" style="border-color: #ffc107; color: #ffc107;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">🔍</div>
+                        取引修正<br>(Update Transaksi)
                     </a>
 
                     <div class="menu-card" style="border-style: dashed; color: #ccc;">
