@@ -13,15 +13,17 @@
                 <a th:href="@{/}" style="color: #000; text-decoration: none; font-size: 0.8rem; border: 1px solid #000; padding: 5px 10px; border-radius: 4px;">← Kembali ke Menu</a>
             </div>
             <div class="card-body">
-                <form th:action="@{/edit-search}" method="get">
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" name="id" class="form-control" placeholder="Masukkan TracId (contoh: U1)" required>
-                        <button type="submit" class="btn btn-primary">Cari Data</button>
-                    </div>
-                </form>
-                <div th:if="${error}" class="alert-success" style="background-color: #f8d7da; color: #842029; margin-top: 15px; padding: 10px; border-radius: 5px;">
-                    Data tidak ditemukan!
-                </div>
+    <div th:if="${status == 'sukses'}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong th:text="${pesan}"></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${status == 'gagal'}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong th:text="${pesan}"></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
             </div>
         </div>
 
@@ -67,6 +69,11 @@
                     </div>
 
                     <button type="submit" class="btn btn-success w-100">Simpan Perubahan (Update)</button>
+                    <div class="mb-3">
+    <label class="form-label">レシート等 (Update Image - Optional)</label>
+    <input type="file" name="file" class="form-control" accept="image/*">
+    <small style="color: gray;">Kosongkan jika tidak ingin mengubah gambar.</small>
+</div>
                 </form>
             </div>
         </div>

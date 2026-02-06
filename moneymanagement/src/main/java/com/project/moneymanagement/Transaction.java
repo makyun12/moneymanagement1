@@ -1,14 +1,16 @@
 package com.project.moneymanagement;
 
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
-
 @Entity
 @Table(name = "listData")
 public class Transaction {
@@ -19,6 +21,8 @@ public class Transaction {
     private BigDecimal tracRatio;
     private BigDecimal tracValueA;
     private String tracRef;
+    
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate tracDate;
     private String tracType;
 

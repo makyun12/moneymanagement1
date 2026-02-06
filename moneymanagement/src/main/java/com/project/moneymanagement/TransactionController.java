@@ -21,24 +21,36 @@ public class TransactionController {
 
     @PostMapping("/save")
     public String saveTransaction(@ModelAttribute Transaction transaction, 
-                                  @RequestParam("file") MultipartFile file) throws IOException {
+                                  @RequestParam("file") MultipartFile file,
+                                  Model model) throws IOException { // Gunakan Model, bukan RedirectAttributes
+        try {
+            // Logika perhitungan tetap sama
+            if (transaction.getTracValueB() != null && transaction.getTracRatio() != null) {
+                BigDecimal res = transaction.getTracValueB()
+                    .multiply(transaction.getTracRatio())
+                    .divide(new BigDecimal(100), RoundingMode.HALF_UP);
+                transaction.setTracValueA(res);
+            }
+
+            if (!file.isEmpty()) {
+                transaction.setTracPic(file.getBytes());
+            }
+
+            repository.save(transaction);
+            
+            // Kirim sinyal berhasil ke halaman yang sama
+            model.addAttribute("status", "sukses");
+            model.addAttribute("pesan", "Pendaftaran Transaksi Berhasil!");
+            
+        } catch (Exception e) {
+            model.addAttribute("status", "gagal");
+            model.addAttribute("pesan", "Terjadi kesalahan: " + e.getMessage());
+        }
+
+        // Ambil data terbaru lagi supaya tabel di bawah tetap terisi setelah refresh
+        model.addAttribute("listData", repository.findAll()); 
         
-        // Logika perhitungan ValueA (ValueB * Ratio / 100)
-        if (transaction.getTracValueB() != null && transaction.getTracRatio() != null) {
-            BigDecimal res = transaction.getTracValueB()
-                .multiply(transaction.getTracRatio())
-                .divide(new BigDecimal(100), RoundingMode.HALF_UP);
-            transaction.setTracValueA(res);
-        }
-
-        // Proses gambar biner (imageBytes)
-        if (!file.isEmpty()) {
-            transaction.setTracPic(file.getBytes());
-        }
-
-        repository.save(transaction);
-        // Mengarahkan ke parameter ?updated agar muncul notifikasi kuning di halaman menu/index
-        return "redirect:/?updated";
+        return "index"; // Langsung balik ke file index.html tanpa "redirect:"
     }
 
     @GetMapping("/")
@@ -59,16 +71,25 @@ public class TransactionController {
     // Fitur Baru: Pencarian data berdasarkan ID untuk proses edit (取引修正)
     @GetMapping("/edit-search")
     public String searchForEdit(@RequestParam(value = "id", required = false) String id, Model model) {
-        if (id != null) {
+        if (id != null && !id.isEmpty()) {
             // Mencari data di database berdasarkan TracId
             Transaction transaction = repository.findById(id).orElse(null);
+            
             if (transaction != null) {
                 model.addAttribute("transaction", transaction);
+                // Menampilkan notifikasi bahwa data ditemukan dan siap diedit
+                model.addAttribute("status", "sukses");
+                model.addAttribute("pesan", "データが見つかりました。編集可能です (Data ditemukan, silakan edit)");
             } else {
-                // Menampilkan pesan error jika ID tidak ditemukan
-                model.addAttribute("error", true);
+                // Jika ID tidak ada di database, kirim pesan error ke area yang dilingkari
+                model.addAttribute("status", "gagal");
+                model.addAttribute("pesan", "ID: " + id + " は見つかりませんでした (ID tidak ditemukan)");
             }
         }
+        
+        // Pastikan data tabel tetap muncul jika Anda menampilkan daftar di bawahnya
+        model.addAttribute("listData", repository.findAll()); 
+        
         return "edit-transaction"; // Mengarah ke file edit-transaction.html
     }
 }
